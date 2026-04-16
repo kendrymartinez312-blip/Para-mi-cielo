@@ -1,0 +1,197 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para mi cielo</title>
+    <style>
+        :root {
+            --color-amor: #ff4d6d;
+            --color-fondo: #fff0f3;
+            --color-texto: #590d22;
+        }
+
+        /* Ajuste vertical y fondo animado */
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(45deg, #fff0f3, #ffd6e0, #ffc2d1);
+            background-size: 300% 300%;
+            animation: fondoMovimiento 8s infinite alternate;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            text-align: center;
+            flex-direction: column; /* Asegura orientación vertical */
+            overflow-x: hidden;
+        }
+
+        @keyframes fondoMovimiento {
+            0% { background-position: left; }
+            100% { background-position: right; }
+        }
+
+        /* Pantalla de inicio - EL SOBRE */
+        #pantalla-inicio {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: var(--color-amor);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            color: white;
+            cursor: pointer;
+        }
+
+        .sobre { font-size: 80px; animation: flotar 2s infinite ease-in-out; }
+        @keyframes flotar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+
+        /* Tarjeta Principal con límite de ancho para verticalidad */
+        #tarjeta {
+            display: none; 
+            background: white; /* Cambiado de Blue para legibilidad, mantén el color que prefieras */
+            width: 90%;
+            max-width: 400px; /* Límite de ancho para mantenerlo vertical */
+            padding: 25px;
+            border-radius: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 2px solid #ffb3c1;
+            margin: 20px auto;
+            animation: aparecerSuave 1s ease;
+        }
+
+        @keyframes aparecerSuave {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #tarjeta:hover {
+            transform: scale(1.02);
+            transition: 0.3s;
+        }
+
+        /* Límite a la imagen para que no ensanche la página */
+        .img-header { 
+            width: 100%; 
+            max-height: 300px; /* Límite de altura */
+            object-fit: cover; /* Ajusta la imagen sin deformar */
+            border-radius: 20px; 
+            margin-bottom: 20px; 
+            display: block;
+        }
+
+        .contador {
+            background: #fff0f3;
+            padding: 15px;
+            border-radius: 20px;
+            margin: 20px 0;
+            color: var(--color-amor);
+            font-weight: bold;
+        }
+
+        .mensaje {
+            text-align: left;
+            line-height: 1.6;
+            font-style: italic;
+            color: var(--color-texto);
+            font-size: 0.95rem;
+        }
+
+        #timer { font-size: 1.4rem; display: block; margin-top: 5px; }
+
+        /* Corazones flotando */
+        .corazon {
+            position: fixed;
+            font-size: 20px;
+            animation: flotarArriba 6s linear infinite;
+            opacity: 0.5;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @keyframes flotarArriba {
+            from { transform: translateY(100vh); }
+            to { transform: translateY(-10vh); }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="pantalla-inicio" onclick="abrirRegalo()">
+        <div class="sobre">💌</div>
+        <h2 style="margin-top:20px;">Toca el sobre para tu sorpresa</h2>
+        <p>Mi amor, mi cielo, mi ni&ntilde;o...</p>
+    </div>
+
+    <div id="tarjeta">
+        <img src="cumple.png" class="img-header" alt="Feliz Cumple">
+        
+        <h1>&iexcl;Feliz Cumplea&ntilde;os!</h1>
+
+        <div class="mensaje">
+            <p><strong>Amor m&iacute;o</strong>, hoy celebro tu vida como si fuera el regalo m&aacute;s bonito que me dio el mundo. Eres esa persona que me llena de calma, de risas y de un amor tan sincero que no se puede explicar, solo sentir.</p>
+            <p>Quiero que nunca olvides lo incre&iacute;ble que eres, porque yo lo veo en cada cosa que haces, en tu forma de luchar, de so&ntilde;ar y de ser t&uacute;. Me siento profundamente orgullosa de ti, <strong>mi cielo</strong>, de todo lo que has logrado y de todo lo que s&eacute; que vas a alcanzar.</p>
+        </div>
+
+        <div class="contador">
+            <span>NUESTRA HISTORIA LLEVA:</span>
+            <div id="timer">Contando...</div>
+        </div>
+
+        <div class="mensaje">
+            <p>Aqu&iacute; estoy para ti siempre, en los d&iacute;as buenos y en los no tan buenos, para apoyarte, abrazarte y recordarte cu&aacute;nto vales. Te amo con una ternura inmensa, de esa que crece cada d&iacute;a y que no tiene final. <strong>Mini&ntilde;o</strong>, eres mi todo. 💖</p>
+        </div>
+
+        <audio id="musica" src="Thinking out Loud.mp3"></audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script>
+        const fechaInicio = new Date('2026-01-13T00:00:00').getTime();
+
+        function actualizarContador() {
+            const ahora = new Date().getTime();
+            const diferencia = ahora - fechaInicio;
+            const d = Math.floor(diferencia / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diferencia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diferencia % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diferencia % (1000 * 60)) / 1000);
+            document.getElementById("timer").innerHTML = d + "d " + h + "h " + m + "m " + s + "s";
+        }
+
+        function crearCorazones() {
+            setInterval(() => {
+                const corazon = document.createElement("div");
+                corazon.className = "corazon";
+                corazon.innerHTML = " ❤️ 📚🚚";
+                corazon.style.left = Math.random() * 100 + "vw";
+                corazon.style.fontSize = (Math.random() * 15 + 15) + "px";
+                document.body.appendChild(corazon);
+                setTimeout(() => corazon.remove(), 6000);
+            }, 400);
+        }
+
+        function abrirRegalo() {
+            document.getElementById('pantalla-inicio').style.display = 'none';
+            document.getElementById('tarjeta').style.display = 'block';
+
+            // Reproducir música local
+            const cancion = document.getElementById('musica');
+            cancion.play();
+
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+            crearCorazones();
+        }
+
+        setInterval(actualizarContador, 1000);
+        actualizarContador();
+
+        document.getElementById("tarjeta").addEventListener("dblclick", () => {
+            alert("💖 Si encontraste esto... te amo m\u00e1s de lo que imaginas 💖");
+        });
+    </script>
+</body>
+</html>
